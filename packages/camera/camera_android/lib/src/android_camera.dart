@@ -94,7 +94,8 @@ class AndroidCamera extends CameraPlatform {
   @override
   Future<int> createCamera(
     CameraDescription cameraDescription,
-    ResolutionPreset? resolutionPreset, {
+    ResolutionPreset? resolutionPreset,
+    ResolutionAspectRatio? resolutionAspectRatio, {
     bool enableAudio = false,
   }) async {
     try {
@@ -104,6 +105,10 @@ class AndroidCamera extends CameraPlatform {
         'resolutionPreset': resolutionPreset != null
             ? _serializeResolutionPreset(resolutionPreset)
             : null,
+        'resolurionAspectRatio': _serializeResolutionAspectRatio(
+            resolutionAspectRatio != null
+                ? resolutionAspectRatio
+                : ResolutionAspectRatio.RATIO_16_9),
         'enableAudio': enableAudio,
       });
 
@@ -521,6 +526,19 @@ class AndroidCamera extends CameraPlatform {
         return 'low';
       default:
         throw ArgumentError('Unknown ResolutionPreset value');
+    }
+  }
+
+  /// Returns the resolution aspect ratio as a String.
+  String _serializeResolutionAspectRatio(
+      ResolutionAspectRatio resolutionAspectRatio) {
+    switch (resolutionAspectRatio) {
+      case ResolutionAspectRatio.RATIO_16_9:
+        return 'RATIO_16_9';
+      case ResolutionAspectRatio.RATIO_4_3:
+        return 'RATIO_4_3';
+      default:
+        throw ArgumentError('Unknown ResolutionAspectRatio value');
     }
   }
 

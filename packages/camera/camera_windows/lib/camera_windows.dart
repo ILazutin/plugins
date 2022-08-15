@@ -66,7 +66,8 @@ class CameraWindows extends CameraPlatform {
   @override
   Future<int> createCamera(
     CameraDescription cameraDescription,
-    ResolutionPreset? resolutionPreset, {
+    ResolutionPreset? resolutionPreset,
+    ResolutionAspectRatio? resolutionAspectRatio, {
     bool enableAudio = false,
   }) async {
     try {
@@ -75,6 +76,10 @@ class CameraWindows extends CameraPlatform {
           .invokeMapMethod<String, dynamic>('create', <String, dynamic>{
         'cameraName': cameraDescription.name,
         'resolutionPreset': _serializeResolutionPreset(resolutionPreset),
+        'resolurionAspectRatio': _serializeResolutionAspectRatio(
+            resolutionAspectRatio != null
+                ? resolutionAspectRatio
+                : ResolutionAspectRatio.RATIO_16_9),
         'enableAudio': enableAudio,
       });
 

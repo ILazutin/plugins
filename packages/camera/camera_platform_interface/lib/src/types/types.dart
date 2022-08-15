@@ -9,4 +9,5 @@ export 'exposure_mode.dart';
 export 'flash_mode.dart';
 export 'focus_mode.dart';
 export 'image_format_group.dart';
+export 'resolution_aspect_ratio.dart';
 export 'resolution_preset.dart';

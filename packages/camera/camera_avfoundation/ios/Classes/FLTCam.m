@@ -91,12 +91,14 @@ NSString *const errorMethod = @"error";
 
 - (instancetype)initWithCameraName:(NSString *)cameraName
                   resolutionPreset:(NSString *)resolutionPreset
+             resolutionAspectRatio:(NSString *)resolutionAspectRatio
                        enableAudio:(BOOL)enableAudio
                        orientation:(UIDeviceOrientation)orientation
                captureSessionQueue:(dispatch_queue_t)captureSessionQueue
                              error:(NSError **)error {
   return [self initWithCameraName:cameraName
                  resolutionPreset:resolutionPreset
+            resolutionAspectRatio:resolutionAspectRatio
                       enableAudio:enableAudio
                       orientation:orientation
                    captureSession:[[AVCaptureSession alloc] init]
@@ -106,6 +108,7 @@ NSString *const errorMethod = @"error";
 
 - (instancetype)initWithCameraName:(NSString *)cameraName
                   resolutionPreset:(NSString *)resolutionPreset
+             resolutionAspectRatio:(NSString *)resolutionAspectRatio
                        enableAudio:(BOOL)enableAudio
                        orientation:(UIDeviceOrientation)orientation
                     captureSession:(AVCaptureSession *)captureSession
@@ -115,6 +118,11 @@ NSString *const errorMethod = @"error";
   NSAssert(self, @"super init cannot be nil");
   @try {
     _resolutionPreset = FLTGetFLTResolutionPresetForString(resolutionPreset);
+  } @catch (NSError *e) {
+    *error = e;
+  }
+  @try {
+    _resolutionAspectRatio = FLTGetFLTResolutionAspectRatioForString(resolutionAspectRatio);
   } @catch (NSError *e) {
     *error = e;
   }
@@ -173,7 +181,8 @@ NSString *const errorMethod = @"error";
   _motionManager = [[CMMotionManager alloc] init];
   [_motionManager startAccelerometerUpdates];
 
-  [self setCaptureSessionPreset:_resolutionPreset];
+  [self setCaptureSessionPreset:_resolutionPreset
+          resolutionAspectRatio:_resolutionAspectRatio];
   [self updateOrientation];
 
   return self;
@@ -318,50 +327,57 @@ NSString *const errorMethod = @"error";
   return file;
 }
 
-- (void)setCaptureSessionPreset:(FLTResolutionPreset)resolutionPreset {
+- (void)setCaptureSessionPreset:(FLTResolutionPreset)resolutionPreset
+          resolutionAspectRatio:(FLTResolutionAspectRatio)resolutionAspectRatio {
   switch (resolutionPreset) {
     case FLTResolutionPresetMax:
     case FLTResolutionPresetUltraHigh:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset3840x2160]) {
         _captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
-        _previewSize = CGSizeMake(3840, 2160);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(3840, 2160)];
         break;
       }
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetHigh]) {
         _captureSession.sessionPreset = AVCaptureSessionPresetHigh;
-        _previewSize =
-            CGSizeMake(_captureDevice.activeFormat.highResolutionStillImageDimensions.width,
-                       _captureDevice.activeFormat.highResolutionStillImageDimensions.height);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(_captureDevice.activeFormat.highResolutionStillImageDimensions.width,
+                       _captureDevice.activeFormat.highResolutionStillImageDimensions.height)];
         break;
       }
     case FLTResolutionPresetVeryHigh:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
         _captureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
-        _previewSize = CGSizeMake(1920, 1080);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(1920, 1080)];
         break;
       }
     case FLTResolutionPresetHigh:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
         _captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
-        _previewSize = CGSizeMake(1280, 720);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(1280, 720)];
         break;
       }
     case FLTResolutionPresetMedium:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset640x480]) {
         _captureSession.sessionPreset = AVCaptureSessionPreset640x480;
-        _previewSize = CGSizeMake(640, 480);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(640, 480)];
         break;
       }
     case FLTResolutionPresetLow:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset352x288]) {
         _captureSession.sessionPreset = AVCaptureSessionPreset352x288;
-        _previewSize = CGSizeMake(352, 288);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(352, 288)];
         break;
       }
     default:
       if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetLow]) {
         _captureSession.sessionPreset = AVCaptureSessionPresetLow;
-        _previewSize = CGSizeMake(352, 288);
+        _previewSize = [self getPreviewSize:resolutionAspectRatio
+          sourceSize:CGSizeMake(352, 288)];
       } else {
         NSError *error =
             [NSError errorWithDomain:NSCocoaErrorDomain
@@ -372,6 +388,18 @@ NSString *const errorMethod = @"error";
                             }];
         @throw error;
       }
+  }
+}
+
+- (CGSize)getPreviewSize:(FLTResolutionAspectRatio)resolutionAspectRatio
+    sourceSize:(CGSize)sourceSize {
+  switch (resolutionAspectRatio) {
+    case FLTResolutionAspectRatio16_9:
+      return CGSizeMake(sourceSize.width, sourceSize.width / 16 * 9);
+    case FLTResolutionAspectRatio4_3:
+      return CGSizeMake(sourceSize.width, sourceSize.width / 4 * 3);
+    default:
+      return sourceSize;
   }
 }
 

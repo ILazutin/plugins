@@ -290,10 +290,12 @@
   dispatch_async(self.captureSessionQueue, ^{
     NSString *cameraName = createMethodCall.arguments[@"cameraName"];
     NSString *resolutionPreset = createMethodCall.arguments[@"resolutionPreset"];
+    NSString *resolutionAspectRatio = createMethodCall.arguments[@"resolutionAspectRatio"];
     NSNumber *enableAudio = createMethodCall.arguments[@"enableAudio"];
     NSError *error;
     FLTCam *cam = [[FLTCam alloc] initWithCameraName:cameraName
                                     resolutionPreset:resolutionPreset
+                               resolutionAspectRatio:resolutionAspectRatio
                                          enableAudio:[enableAudio boolValue]
                                          orientation:[[UIDevice currentDevice] orientation]
                                  captureSessionQueue:self.captureSessionQueue

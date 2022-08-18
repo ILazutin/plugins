@@ -105,7 +105,7 @@ class AVFoundationCamera extends CameraPlatform {
         'resolutionPreset': resolutionPreset != null
             ? _serializeResolutionPreset(resolutionPreset)
             : null,
-        'resolurionAspectRatio': _serializeResolutionAspectRatio(
+        'resolutionAspectRatio': _serializeResolutionAspectRatio(
             resolutionAspectRatio != null
                 ? resolutionAspectRatio
                 : ResolutionAspectRatio.RATIO_16_9),

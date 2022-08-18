@@ -76,7 +76,7 @@ class CameraWindows extends CameraPlatform {
           .invokeMapMethod<String, dynamic>('create', <String, dynamic>{
         'cameraName': cameraDescription.name,
         'resolutionPreset': _serializeResolutionPreset(resolutionPreset),
-        'resolurionAspectRatio': _serializeResolutionAspectRatio(
+        'resolutionAspectRatio': _serializeResolutionAspectRatio(
             resolutionAspectRatio != null
                 ? resolutionAspectRatio
                 : ResolutionAspectRatio.RATIO_16_9),

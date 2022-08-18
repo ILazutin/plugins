@@ -373,7 +373,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
   private void instantiateCamera(MethodCall call, Result result) throws CameraAccessException {
     String cameraName = call.argument("cameraName");
     String preset = call.argument("resolutionPreset");
-    String aspectRatio = call.argument("resolurionAspectRatio");
+    String aspectRatio = call.argument("resolutionAspectRatio");
     boolean enableAudio = call.argument("enableAudio");
 
     TextureRegistry.SurfaceTextureEntry flutterSurfaceTexture =

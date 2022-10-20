@@ -120,7 +120,7 @@ typedef NS_ENUM(NSInteger, FLTResolutionAspectRatio) {
 
 /**
  * Gets FLTResolutionAspectRatio from its string representation.
- * @param preset a string representation of FLTResolutionAspectRatio.
+ * @param aspectRatio a string representation of FLTResolutionAspectRatio.
  */
 extern FLTResolutionAspectRatio FLTGetFLTResolutionAspectRatioForString(NSString *aspectRatio);
 

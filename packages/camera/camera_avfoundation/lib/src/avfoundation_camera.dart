@@ -539,9 +539,9 @@ class AVFoundationCamera extends CameraPlatform {
       ResolutionAspectRatio resolutionAspectRatio) {
     switch (resolutionAspectRatio) {
       case ResolutionAspectRatio.RATIO_16_9:
-        return 'RATIO_16_9';
+        return 'ratio_16_9';
       case ResolutionAspectRatio.RATIO_4_3:
-        return 'RATIO_4_3';
+        return 'ratio_4_3';
       default:
         throw ArgumentError('Unknown ResolutionAspectRatio value');
     }

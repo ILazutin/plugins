@@ -217,7 +217,7 @@ class Camera
     this.cameraFeatureFactory = cameraFeatureFactory;
     this.cameraFeatures =
         CameraFeatures.init(
-            cameraFeatureFactory, cameraProperties, activity, dartMessenger, resolutionPreset, aspectRatio);
+            cameraFeatureFactory, cameraProperties, CameraUtils.getCameraManager(activity), activity, dartMessenger, resolutionPreset, aspectRatio);
 
     // Create capture callback.
     captureTimeouts = new CaptureTimeoutsWrapper(3000, 3000);

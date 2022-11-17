@@ -7,7 +7,12 @@ package io.flutter.plugins.camera.features.resolution;
 import static java.lang.Math.max;
 
 import android.annotation.TargetApi;
+import android.graphics.ImageFormat;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.CamcorderProfile;
 import android.media.EncoderProfiles;
 import android.os.Build;
@@ -15,6 +20,8 @@ import android.util.Size;
 import androidx.annotation.VisibleForTesting;
 import io.flutter.plugins.camera.CameraProperties;
 import io.flutter.plugins.camera.features.CameraFeature;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,6 +38,7 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
   private EncoderProfiles recordingProfile;
   private ResolutionPreset currentSetting;
   private ResolutionAspectRatio aspectRatio;
+  private CameraManager cameraManager;
   private int cameraId;
 
   /**
@@ -41,8 +49,9 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
    * @param cameraName Camera identifier of the camera for which to configure the resolution.
    */
   public ResolutionFeature(
-      CameraProperties cameraProperties, ResolutionPreset resolutionPreset, ResolutionAspectRatio aspectRatio, String cameraName) {
+          CameraProperties cameraProperties, CameraManager cameraManager, ResolutionPreset resolutionPreset, ResolutionAspectRatio aspectRatio, String cameraName) {
     super(cameraProperties);
+    this.cameraManager = cameraManager;
     this.currentSetting = resolutionPreset;
     this.aspectRatio = aspectRatio;
     try {
@@ -82,8 +91,13 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
    *
    * @return The optimal capture size.
    */
-  public Size getCaptureSize() {
-    return this.captureSize;
+  public Size getCaptureSize() throws CameraAccessException {
+    CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraProperties.getCameraName());
+    StreamConfigurationMap configs = characteristics.get(
+            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+    Size[] outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
+
+    return getFirstEligibleSizeForAspectRatio(outputSizes);
   }
 
   @Override
@@ -298,5 +312,28 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
     }
 
     previewSize = computeBestPreviewSize(cameraId, resolutionPreset, aspectRatio);
+  }
+
+  private Size getFirstEligibleSizeForAspectRatio(Size[] availableSizes) {
+    double widthDivider;
+    double heightDivider;
+    Size defaultSize;
+    if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
+      widthDivider = 16f;
+      heightDivider = 9f;
+      defaultSize = new Size(1920, 1080);
+    } else {
+      widthDivider = 4f;
+      heightDivider = 3f;
+      defaultSize = new Size(1600, 1200);
+    }
+
+    for (Size currentSize : availableSizes) {
+      if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
+        return currentSize;
+      }
+    }
+
+    return defaultSize;
   }
 }

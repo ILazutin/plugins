@@ -5,6 +5,8 @@
 package io.flutter.plugins.camera.features;
 
 import android.app.Activity;
+import android.hardware.camera2.CameraManager;
+
 import io.flutter.plugins.camera.CameraProperties;
 import io.flutter.plugins.camera.DartMessenger;
 import io.flutter.plugins.camera.features.autofocus.AutoFocusFeature;
@@ -45,6 +47,7 @@ public class CameraFeatures {
   public static CameraFeatures init(
           CameraFeatureFactory cameraFeatureFactory,
           CameraProperties cameraProperties,
+          CameraManager cameraManager,
           Activity activity,
           DartMessenger dartMessenger,
           ResolutionPreset resolutionPreset,
@@ -71,7 +74,7 @@ public class CameraFeatures {
         cameraFeatureFactory.createNoiseReductionFeature(cameraProperties));
     cameraFeatures.setResolution(
         cameraFeatureFactory.createResolutionFeature(
-            cameraProperties, resolutionPreset, aspectRatio, cameraProperties.getCameraName()));
+            cameraProperties, cameraManager, resolutionPreset, aspectRatio, cameraProperties.getCameraName()));
     cameraFeatures.setZoomLevel(cameraFeatureFactory.createZoomLevelFeature(cameraProperties));
     return cameraFeatures;
   }

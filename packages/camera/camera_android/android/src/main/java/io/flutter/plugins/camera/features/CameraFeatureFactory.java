@@ -5,6 +5,8 @@
 package io.flutter.plugins.camera.features;
 
 import android.app.Activity;
+import android.hardware.camera2.CameraManager;
+
 import androidx.annotation.NonNull;
 import io.flutter.plugins.camera.CameraProperties;
 import io.flutter.plugins.camera.DartMessenger;
@@ -71,12 +73,14 @@ public interface CameraFeatureFactory {
    *
    * @param cameraProperties instance of the CameraProperties class containing information about the
    *     cameras features.
+   * @param cameraManager instance of CameraManager class
    * @param initialSetting initial resolution preset.
    * @param cameraName the name of the camera which can be used to identify the camera device.
    * @return newly created instance of the ResolutionFeature class.
    */
   ResolutionFeature createResolutionFeature(
       @NonNull CameraProperties cameraProperties,
+      @NonNull CameraManager cameraManager,
       ResolutionPreset initialSetting,
       ResolutionAspectRatio aspectRatio,
       String cameraName);

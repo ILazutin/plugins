@@ -5,6 +5,8 @@
 package io.flutter.plugins.camera.features;
 
 import android.app.Activity;
+import android.hardware.camera2.CameraManager;
+
 import androidx.annotation.NonNull;
 import io.flutter.plugins.camera.CameraProperties;
 import io.flutter.plugins.camera.DartMessenger;
@@ -54,10 +56,11 @@ public class CameraFeatureFactoryImpl implements CameraFeatureFactory {
   @Override
   public ResolutionFeature createResolutionFeature(
       @NonNull CameraProperties cameraProperties,
+      @NonNull CameraManager cameraManager,
       ResolutionPreset initialSetting,
       ResolutionAspectRatio aspectRatio,
       String cameraName) {
-    return new ResolutionFeature(cameraProperties, initialSetting, aspectRatio, cameraName);
+    return new ResolutionFeature(cameraProperties, cameraManager, initialSetting, aspectRatio, cameraName);
   }
 
   @Override

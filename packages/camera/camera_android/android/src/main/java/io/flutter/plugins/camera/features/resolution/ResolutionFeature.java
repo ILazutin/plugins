@@ -17,6 +17,7 @@ import android.media.CamcorderProfile;
 import android.media.EncoderProfiles;
 import android.os.Build;
 import android.util.Size;
+import android.util.Log;
 import androidx.annotation.VisibleForTesting;
 import io.flutter.plugins.camera.CameraProperties;
 import io.flutter.plugins.camera.features.CameraFeature;
@@ -96,8 +97,9 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
     StreamConfigurationMap configs = characteristics.get(
             CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
     Size[] outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
+    Size[] highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
 
-    return getFirstEligibleSizeForAspectRatio(outputSizes);
+    return getFirstEligibleSizeForAspectRatio(highRes, outputSizes);
   }
 
   @Override
@@ -314,7 +316,7 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
     previewSize = computeBestPreviewSize(cameraId, resolutionPreset, aspectRatio);
   }
 
-  private Size getFirstEligibleSizeForAspectRatio(Size[] availableSizes) {
+  private Size getFirstEligibleSizeForAspectRatio(Size[] highResSizes, Size[] standardSizes) {
     double widthDivider;
     double heightDivider;
     Size defaultSize;
@@ -328,7 +330,13 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       defaultSize = new Size(1600, 1200);
     }
 
-    for (Size currentSize : availableSizes) {
+    for (Size currentSize : highResSizes) {
+      if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
+        return currentSize;
+      }
+    }
+
+    for (Size currentSize : standardSizes) {
       if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
         return currentSize;
       }

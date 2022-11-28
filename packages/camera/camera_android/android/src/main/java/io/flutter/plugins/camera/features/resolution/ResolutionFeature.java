@@ -98,6 +98,8 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
             CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
     Size[] outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
     Size[] highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
+    Log.w("CAMERA SIZES HIGH", Arrays.toString(highRes));
+    Log.w("CAMERA SIZES ALL", Arrays.toString(outputSizes));
 
     return getFirstEligibleSizeForAspectRatio(highRes, outputSizes);
   }

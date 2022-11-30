@@ -92,30 +92,34 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
    *
    * @return The optimal capture size.
    */
-  public Size getCaptureSize() throws CameraAccessException {
-    CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraProperties.getCameraName());
-    StreamConfigurationMap configs = characteristics.get(
-            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-    Size[] outputSizes = new Size[0];
+  public Size getCaptureSize() {
     try {
-      outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
+        CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraProperties.getCameraName());
+        StreamConfigurationMap configs = characteristics.get(
+                CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+        Size[] outputSizes = new Size[0];
+        try {
+          outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
+        } catch (Exception exception) {
+          Log.e("CameraResolution", exception.toString());
+        }
+
+        Size[] highRes = new Size[0];
+        try {
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
+          }
+        } catch (Exception exception) {
+          Log.e("CameraResolution", exception.toString());
+        }
+
+        Log.w("CAMERA SIZES HIGH", Arrays.toString(highRes));
+        Log.w("CAMERA SIZES ALL", Arrays.toString(outputSizes));
+
+        return getFirstEligibleSizeForAspectRatio(highRes, outputSizes);
     } catch (Exception exception) {
-      Log.e("CameraResolution", exception.toString());
+        return this.captureSize;
     }
-
-    Size[] highRes = new Size[0];
-    try {
-      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-        highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
-      }
-    } catch (Exception exception) {
-      Log.e("CameraResolution", exception.toString());
-    }
-
-    Log.w("CAMERA SIZES HIGH", Arrays.toString(highRes));
-    Log.w("CAMERA SIZES ALL", Arrays.toString(outputSizes));
-
-    return getFirstEligibleSizeForAspectRatio(highRes, outputSizes);
   }
 
   @Override

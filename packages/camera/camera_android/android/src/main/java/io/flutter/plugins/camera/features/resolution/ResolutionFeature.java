@@ -347,15 +347,19 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       heightDivider = 3f;
     }
 
-    for (Size currentSize : highResSizes) {
-      if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
-        return currentSize;
+    if (highResSizes != null) {
+      for (Size currentSize : highResSizes) {
+        if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
+          return currentSize;
+        }
       }
     }
 
-    for (Size currentSize : standardSizes) {
-      if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
-        return currentSize;
+    if (standardSizes != null) {
+      for (Size currentSize : standardSizes) {
+        if ((currentSize.getWidth() / widthDivider) == (currentSize.getHeight() / heightDivider)) {
+          return currentSize;
+        }
       }
     }
 

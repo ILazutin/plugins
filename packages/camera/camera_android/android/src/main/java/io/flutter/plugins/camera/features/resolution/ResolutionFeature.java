@@ -96,8 +96,22 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
     CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraProperties.getCameraName());
     StreamConfigurationMap configs = characteristics.get(
             CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-    Size[] outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
-    Size[] highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
+    Size[] outputSizes = new Size[0];
+    try {
+      outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
+    } catch (Exception ignored) {
+      Log.e("CameraResolution", ignored.toString());
+    }
+
+    Size[] highRes = new Size[0];
+    try {
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
+      }
+    } catch (Exception ignored) {
+      Log.e("CameraResolution", ignored.toString());
+    }
+
     Log.w("CAMERA SIZES HIGH", Arrays.toString(highRes));
     Log.w("CAMERA SIZES ALL", Arrays.toString(outputSizes));
 
@@ -321,15 +335,12 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
   private Size getFirstEligibleSizeForAspectRatio(Size[] highResSizes, Size[] standardSizes) {
     double widthDivider;
     double heightDivider;
-    Size defaultSize;
     if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
       widthDivider = 16f;
       heightDivider = 9f;
-      defaultSize = new Size(1920, 1080);
     } else {
       widthDivider = 4f;
       heightDivider = 3f;
-      defaultSize = new Size(1600, 1200);
     }
 
     for (Size currentSize : highResSizes) {
@@ -344,6 +355,6 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       }
     }
 
-    return defaultSize;
+    return this.captureSize;
   }
 }

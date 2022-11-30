@@ -99,8 +99,8 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
     Size[] outputSizes = new Size[0];
     try {
       outputSizes = configs.getOutputSizes(ImageFormat.JPEG);
-    } catch (Exception ignored) {
-      Log.e("CameraResolution", ignored.toString());
+    } catch (Exception exception) {
+      Log.e("CameraResolution", exception.toString());
     }
 
     Size[] highRes = new Size[0];
@@ -108,8 +108,8 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
         highRes = configs.getHighResolutionOutputSizes(ImageFormat.JPEG);
       }
-    } catch (Exception ignored) {
-      Log.e("CameraResolution", ignored.toString());
+    } catch (Exception exception) {
+      Log.e("CameraResolution", exception.toString());
     }
 
     Log.w("CAMERA SIZES HIGH", Arrays.toString(highRes));

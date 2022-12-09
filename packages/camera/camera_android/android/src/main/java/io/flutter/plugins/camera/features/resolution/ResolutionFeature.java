@@ -159,14 +159,25 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
           getBestAvailableCamcorderProfileForResolutionPreset(cameraId, preset);
       List<EncoderProfiles.VideoProfile> videoProfiles = profile.getVideoProfiles();
       EncoderProfiles.VideoProfile defaultVideoProfile = videoProfiles.get(0);
-      int maxSize = max(defaultVideoProfile.getWidth(), defaultVideoProfile.getHeight());
-      double scale = 1.0;
+
+      int width;
+      int height;
+      if (defaultVideoProfile != null) {
+        width = defaultVideoProfile.getWidth();
+        height = defaultVideoProfile.getHeight();
+      } else {
+        width = 1280;
+        height = 720;
+      }
+      int maxSize = max(width, height);
+
+      double scale;
       if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
         scale = 9/16f;
       } else {
         scale = 3/4f;
       }
-      if (maxSize == defaultVideoProfile.getWidth()) {
+      if (maxSize == width) {
         return new Size(maxSize, (int) Math.round(maxSize * scale));
       } else {
         return new Size((int) Math.round(maxSize * scale), maxSize);
@@ -175,14 +186,26 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       @SuppressWarnings("deprecation")
       CamcorderProfile profile =
           getBestAvailableCamcorderProfileForResolutionPresetLegacy(cameraId, preset);
-      int maxSize = max(profile.videoFrameWidth, profile.videoFrameHeight);
-      double scale = 1.0;
+
+      int width;
+      int height;
+      if (profile != null) {
+        width = profile.videoFrameWidth;
+        height = profile.videoFrameHeight;
+      } else {
+        width = 1280;
+        height = 720;
+      }
+      int maxSize = max(width, height);
+
+      double scale;
       if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
         scale = 9/16f;
       } else {
         scale = 3/4f;
       }
-      if (maxSize == profile.videoFrameWidth) {
+
+      if (maxSize == width) {
         return new Size(maxSize, (int) Math.round(maxSize * scale));
       } else {
         return new Size((int) Math.round(maxSize * scale), maxSize);
@@ -302,14 +325,26 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       List<EncoderProfiles.VideoProfile> videoProfiles = recordingProfile.getVideoProfiles();
 
       EncoderProfiles.VideoProfile defaultVideoProfile = videoProfiles.get(0);
-      int maxSize = max(defaultVideoProfile.getWidth(), defaultVideoProfile.getHeight());
-      double scale = 1.0;
+
+      int width;
+      int height;
+      if (defaultVideoProfile != null) {
+        width = defaultVideoProfile.getWidth();
+        height = defaultVideoProfile.getHeight();
+      } else {
+        width = 1280;
+        height = 720;
+      }
+      int maxSize = max(width, height);
+
+      double scale;
       if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
         scale = 9/16f;
       } else {
         scale = 3/4f;
       }
-      if (maxSize == defaultVideoProfile.getWidth()) {
+
+      if (maxSize == width) {
         captureSize = new Size(maxSize, (int) Math.round(maxSize * scale));
       } else {
         captureSize = new Size((int) Math.round(maxSize * scale), maxSize);
@@ -319,14 +354,26 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
       CamcorderProfile camcorderProfile =
           getBestAvailableCamcorderProfileForResolutionPresetLegacy(cameraId, resolutionPreset);
       recordingProfileLegacy = camcorderProfile;
-      int maxSize = max(recordingProfileLegacy.videoFrameWidth, recordingProfileLegacy.videoFrameHeight);
-      double scale = 1.0;
+
+      int width;
+      int height;
+      if (recordingProfileLegacy != null) {
+        width = recordingProfileLegacy.videoFrameWidth;
+        height = recordingProfileLegacy.videoFrameHeight;
+      } else {
+        width = 1280;
+        height = 720;
+      }
+      int maxSize = max(width, height);
+
+      double scale;
       if (aspectRatio == ResolutionAspectRatio.RATIO_16_9) {
         scale = 9/16f;
       } else {
         scale = 3/4f;
       }
-      if (maxSize == recordingProfileLegacy.videoFrameWidth) {
+
+      if (maxSize == width) {
         captureSize = new Size(maxSize, (int) Math.round(maxSize * scale));
       } else {
         captureSize = new Size((int) Math.round(maxSize * scale), maxSize);

@@ -663,7 +663,7 @@ NSString *const errorMethod = @"error";
     _isRecording = NO;
 
     if (_videoWriter.status != AVAssetWriterStatusUnknown) {
-      [_videoWriterInput markAsFinished];
+      // [_videoWriterInput markAsFinished];
       [_videoWriter finishWritingWithCompletionHandler:^{
         if (self->_videoWriter.status == AVAssetWriterStatusCompleted) {
           [self updateOrientation];

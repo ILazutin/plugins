@@ -663,15 +663,17 @@ NSString *const errorMethod = @"error";
     _isRecording = NO;
 
     if (_videoWriter.status != AVAssetWriterStatusUnknown) {
+      [_videoWriterInput markAsFinished];
       [_videoWriter finishWritingWithCompletionHandler:^{
         if (self->_videoWriter.status == AVAssetWriterStatusCompleted) {
           [self updateOrientation];
           [result sendSuccessWithData:self->_videoRecordingPath];
           self->_videoRecordingPath = nil;
         } else {
-          [result sendErrorWithCode:@"IOError"
-                            message:@"AVAssetWriter could not finish writing!"
-                            details:nil];
+          [result sendError:self->_videoWriter.error]
+          // [result sendErrorWithCode:@"IOError"
+          //                   message:@"AVAssetWriter could not finish writing!"
+          //                   details:nil];
         }
       }];
     }

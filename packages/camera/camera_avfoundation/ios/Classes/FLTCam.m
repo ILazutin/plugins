@@ -670,7 +670,7 @@ NSString *const errorMethod = @"error";
           [result sendSuccessWithData:self->_videoRecordingPath];
           self->_videoRecordingPath = nil;
         } else {
-          [result sendError:self->_videoWriter.error]
+          [result sendError:self->_videoWriter.error];
           // [result sendErrorWithCode:@"IOError"
           //                   message:@"AVAssetWriter could not finish writing!"
           //                   details:nil];

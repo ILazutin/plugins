@@ -1035,11 +1035,11 @@ NSString *const errorMethod = @"error";
   NSDictionary *videoSettings = [_captureVideoOutput
       recommendedVideoSettingsForAssetWriterWithOutputFileType:AVFileTypeMPEG4];
 
-  [videoSettings setValue:AVVideoCodecTypeH264 forKey:AVVideoCodecKey];
+  // [videoSettings setValue:AVVideoCodecTypeH264 forKey:AVVideoCodecKey];
 
-  NSMutableDictionary* compressionPropertiesDict = [NSMutableDictionary new];
-  compressionPropertiesDict[AVVideoProfileLevelKey] = AVVideoProfileLevelH264High40;
-  [videoSettings setValue:compressionPropertiesDict forKey:AVVideoCompressionPropertiesKey];      
+  // NSMutableDictionary* compressionPropertiesDict = [NSMutableDictionary new];
+  // compressionPropertiesDict[AVVideoProfileLevelKey] = AVVideoProfileLevelH264High40;
+  // [videoSettings setValue:compressionPropertiesDict forKey:AVVideoCompressionPropertiesKey];      
 
   _videoWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                          outputSettings:videoSettings];
